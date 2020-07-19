@@ -629,7 +629,7 @@ void SX126XLT::setupLoRa(uint32_t frequency, int32_t offset, uint8_t modParam1, 
   setModulationParams(modParam1, modParam2, modParam3, modParam4);
   setBufferBaseAddress(0, 0);
   setPacketParams(8, LORA_PACKET_VARIABLE_LENGTH, 255, LORA_CRC_ON, LORA_IQ_NORMAL);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
+  setDioIrqParams(IRQ_RADIO_ALL, savedDio1Mask, savedDio2Mask, savedDio3Mask);   //set for IRQ on TX done and timeout on DIO1
   setHighSensitivity();  //set for maximum gain
   setSyncWord(LORA_MAC_PRIVATE_SYNCWORD);
 }
@@ -1351,7 +1351,6 @@ uint8_t SX126XLT::transmit(uint8_t *txbuffer, uint8_t size, uint32_t txtimeout, 
   writeRegister(REG_LR_PAYLOADLENGTH, _TXPacketL);
   setTxParams(txpower, RADIO_RAMP_200_US);
   
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
   setTx(txtimeout);                                                          //this starts the TX
 
   if (!wait)
@@ -1629,7 +1628,6 @@ uint8_t SX126XLT::receive(uint8_t *rxbuffer, uint8_t size, uint32_t rxtimeout, u
   uint16_t regdata;
   uint8_t buffer[2];
 
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
   setRx(rxtimeout);
 
   if (!wait)
@@ -2113,7 +2111,6 @@ uint8_t SX126XLT::transmitSXBuffer(uint8_t startaddr, uint8_t length, uint32_t t
   setPacketParams(savedPacketParam1, savedPacketParam2, length, savedPacketParam4, savedPacketParam5);
   setTxParams(txpower, RAMP_TIME);
   
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
   setTx(txtimeout);                            //this starts the TX
 
   if (!wait)
@@ -2170,7 +2167,6 @@ uint8_t SX126XLT::receiveSXBuffer(uint8_t startaddr, uint32_t rxtimeout, uint8_t
   
   setBufferBaseAddress(0, startaddr);               //order is TX RX
   
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
   setRx(rxtimeout);                                 //no actual RX timeout in this function
 
   if (!wait)
@@ -2703,7 +2699,6 @@ uint8_t SX126XLT::receiveAddressed(uint8_t *rxbuffer, uint8_t size, uint32_t rxt
   uint16_t regdata;
   uint8_t buffer[2];
   
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on RX done or timeout
   setRx(rxtimeout);                                                                
   
   if (!wait)

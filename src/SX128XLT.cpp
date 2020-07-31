@@ -539,7 +539,7 @@ void SX128XLT::setupLoRa(uint32_t frequency, int32_t offset, uint8_t modParam1, 
   setBufferBaseAddress(0, 0);
   setModulationParams(modParam1, modParam2, modParam3);
   setPacketParams(12, LORA_PACKET_VARIABLE_LENGTH, 255, LORA_CRC_ON, LORA_IQ_NORMAL, 0, 0);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);
+  setDioIrqParams(IRQ_RADIO_ALL, savedDio1Mask, savedDio2Mask, savedDio3Mask);
 }
 
 
@@ -1163,7 +1163,7 @@ uint8_t SX128XLT::transmit(uint8_t *txbuffer, uint8_t size, uint16_t timeout, in
   }
 
   setTxParams(txpower, RAMP_TIME);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
   setTx(timeout);                                                          //this starts the TX
   
   if (!wait)
@@ -1401,7 +1401,7 @@ uint8_t SX128XLT::receive(uint8_t *rxbuffer, uint8_t size, uint16_t timeout, uin
   uint16_t regdata;
   uint8_t buffer[2];
 
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
   setRx(timeout);
 
   if (!wait)
@@ -1878,7 +1878,7 @@ uint8_t SX128XLT::transmitSXBuffer(uint8_t startaddr, uint8_t length, uint16_t t
 
   setPacketParams(savedPacketParam1, savedPacketParam2, length, savedPacketParam4, savedPacketParam5, savedPacketParam6, savedPacketParam7);
   setTxParams(txpower, RAMP_TIME);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
   setTx(timeout);                            //this starts the TX
 
   if (!wait)
@@ -1934,7 +1934,7 @@ uint8_t SX128XLT::receiveSXBuffer(uint8_t startaddr, uint16_t timeout, uint8_t w
   setMode(MODE_STDBY_RC);
   
   setBufferBaseAddress(0, startaddr);               //order is TX RX
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
   
   setRx(timeout);                                 //no actual RX timeout in this function
 
@@ -2155,7 +2155,7 @@ bool SX128XLT::transmitRanging(uint32_t address, uint16_t timeout, int8_t txpowe
   setMode(MODE_STDBY_RC);
   setRangingMasterAddress(address);
   setTxParams(txpower, RADIO_RAMP_02_US);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RANGING_MASTER_RESULT_VALID + IRQ_RANGING_MASTER_RESULT_TIMEOUT), 0, 0);
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RANGING_MASTER_RESULT_VALID + IRQ_RANGING_MASTER_RESULT_TIMEOUT), 0, 0);
   setTx(timeout);                               //this sends the ranging packet
     
   if (!wait)
@@ -2184,7 +2184,7 @@ uint8_t SX128XLT::receiveRanging(uint32_t address, uint16_t timeout, int8_t txpo
   
   setTxParams(txpower, RADIO_RAMP_02_US);
   setRangingSlaveAddress(address);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RANGING_SLAVE_RESPONSE_DONE + IRQ_RANGING_SLAVE_REQUEST_DISCARDED), 0, 0);
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RANGING_SLAVE_RESPONSE_DONE + IRQ_RANGING_SLAVE_REQUEST_DISCARDED), 0, 0);
   setRx(timeout);
 
   if (!wait)
@@ -2523,7 +2523,7 @@ uint8_t SX128XLT::transmitAddressed(uint8_t *txbuffer, uint8_t size, char txpack
   }
 
   setTxParams(txpower, RAMP_TIME);
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_TX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);   //set for IRQ on TX done and timeout on DIO1
   setTx(timeout);                                                          //this starts the TX
   
   if (!wait)
@@ -2554,7 +2554,7 @@ uint8_t SX128XLT::receiveAddressed(uint8_t *rxbuffer, uint8_t size, uint16_t tim
   uint16_t regdata;
   uint8_t buffer[2];
 
-  setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
+  // setDioIrqParams(IRQ_RADIO_ALL, (IRQ_RX_DONE + IRQ_RX_TX_TIMEOUT), 0, 0);  //set for IRQ on RX done or timeout
   setRx(timeout);
 
   if (!wait)

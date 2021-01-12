@@ -2642,6 +2642,14 @@ return _RXPacketType;
 */
 
 
+void SX128XLT::setTxCW(int8_t txpower)
+{
+#ifdef SX128XDEBUG
+  Serial.println(F("setTxParams()"));
+#endif
+  checkBusy();
+  writeCommand(RADIO_SET_TXCONTINUOUSWAVE, NULL, 0);
+}
 
 
 

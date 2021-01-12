@@ -135,6 +135,7 @@ class SX128XLT  {
 //End direct access SX buffer routines
 ***************************************************************************/
 
+void setTxCW(int8_t txpower);
 
 /***************************************************************************
 //Start ranging routines
